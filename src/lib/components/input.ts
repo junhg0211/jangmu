@@ -89,102 +89,102 @@ export function oninput(e: Event & { currentTarget: HTMLInputElement }) {
 
 	if (inputEvent.data === '?') {
 		target.value = target.value.slice(0, -1) + '？';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '!') {
 		target.value = target.value.slice(0, -1) + '！';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '.') {
 		target.value = target.value.slice(0, -1) + '。';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === ',') {
 		target.value = target.value.slice(0, -1) + '，';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '\\') {
 		target.value = target.value.slice(0, -1) + '、';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === ';') {
 		target.value = target.value.slice(0, -1) + '；';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === ':') {
 		target.value = target.value.slice(0, -1) + '：';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '(') {
 		target.value = target.value.slice(0, -1) + '（';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === ')') {
 		target.value = target.value.slice(0, -1) + '）';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '“') {
 		target.value = target.value.slice(0, -1) + '「';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '”') {
 		target.value = target.value.slice(0, -1) + '」';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '‘') {
 		target.value = target.value.slice(0, -1) + '『';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '’') {
 		target.value = target.value.slice(0, -1) + '』';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '~') {
 		target.value = target.value.slice(0, -1) + '〜';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === ' ') {
 		target.value = target.value.slice(0, -1) + '　';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === '-') {
 		target.value = target.value.slice(0, -1) + 'ー';
-		return;
+		return target.dispatchEvent(new Event('input', { bubbles: true }));
 	}
 
 	if (inputEvent.data === "'") {
 		const charCode = target.value.charCodeAt(target.value.length - 2);
 		if (MT.A.charCodeAt(0) <= charCode && charCode <= MT.MO.charCodeAt(0)) {
 			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 74);
-			return;
+			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		} else if (MT.A.charCodeAt(0) + 74 <= charCode && charCode <= MT.MO.charCodeAt(0) + 74) {
 			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
-			return;
+			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		} else if (MT.A.charCodeAt(0) + 144 <= charCode && charCode <= MT.MO.charCodeAt(0) + 144) {
 			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
-			return;
+			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 	}
 
 	for (const [key, value] of Object.entries(MT).sort((a, b) => b[0].length - a[0].length)) {
 		if (target.value.endsWith(key)) {
 			target.value = target.value.slice(0, -key.length) + value;
-			return;
+			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 	}
 }
