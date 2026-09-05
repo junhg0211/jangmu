@@ -3,4 +3,4 @@
 	let { value = $bindable(), ...restProps } = $props();
 </script>
 
-<input {...restProps} bind:value {oninput} />
+<textarea {...restProps} bind:value {oninput} />

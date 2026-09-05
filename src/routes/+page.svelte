@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Input from '$lib/components/Input.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
 
 	type Word = {
 		id: number;
@@ -227,5 +228,6 @@
 		{:else}
 			<p>단어를 선택하세요.</p>
 		{/if}
+		<Textarea style="width: 100%; height: 200px; margin-top: 16px;"></Textarea>
 	</div>
 </div>
