@@ -184,7 +184,7 @@
 				</label>
 				<label>
 					<span>품사</span>
-					<Input bind:value={selected.pos} />
+					<input bind:value={selected.pos} />
 				</label>
 				<label>
 					<span>뜻</span>
