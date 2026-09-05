@@ -78,112 +78,122 @@
 		MM: String.fromCharCode(73 + 0xe300)
 	};
 
-	function oninput(e) {
-		if (!e.data) {
+	function oninput(e: Event & { currentTarget: HTMLInputElement }) {
+		const input = e.currentTarget;
+		const inputEvent = e as unknown as InputEvent;
+
+		if (!inputEvent.data) {
 			return;
 		}
 
-		if (e.data === '?') {
-			e.target.value = e.target.value.slice(0, -1) + '？';
+		if (!inputEvent.target || !(inputEvent.target instanceof HTMLInputElement)) {
 			return;
 		}
 
-		if (e.data === '!') {
-			e.target.value = e.target.value.slice(0, -1) + '！';
+		if (inputEvent.data === '?') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '？';
 			return;
 		}
 
-		if (e.data === '.') {
-			e.target.value = e.target.value.slice(0, -1) + '。';
+		if (inputEvent.data === '!') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '！';
 			return;
 		}
 
-		if (e.data === ',') {
-			e.target.value = e.target.value.slice(0, -1) + '，';
+		if (inputEvent.data === '.') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '。';
 			return;
 		}
 
-		if (e.data === '\\') {
-			e.target.value = e.target.value.slice(0, -1) + '、';
+		if (inputEvent.data === ',') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '，';
 			return;
 		}
 
-		if (e.data === ';') {
-			e.target.value = e.target.value.slice(0, -1) + '；';
+		if (inputEvent.data === '\\') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '、';
 			return;
 		}
 
-		if (e.data === ':') {
-			e.target.value = e.target.value.slice(0, -1) + '：';
+		if (inputEvent.data === ';') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '；';
 			return;
 		}
 
-		if (e.data === '(') {
-			e.target.value = e.target.value.slice(0, -1) + '（';
+		if (inputEvent.data === ':') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '：';
 			return;
 		}
 
-		if (e.data === ')') {
-			e.target.value = e.target.value.slice(0, -1) + '）';
+		if (inputEvent.data === '(') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '（';
 			return;
 		}
 
-		if (e.data === '“') {
-			e.target.value = e.target.value.slice(0, -1) + '「';
+		if (inputEvent.data === ')') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '）';
 			return;
 		}
 
-		if (e.data === '”') {
-			e.target.value = e.target.value.slice(0, -1) + '」';
+		if (inputEvent.data === '“') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '「';
 			return;
 		}
 
-		if (e.data === '‘') {
-			e.target.value = e.target.value.slice(0, -1) + '『';
+		if (inputEvent.data === '”') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '」';
 			return;
 		}
 
-		if (e.data === '’') {
-			e.target.value = e.target.value.slice(0, -1) + '』';
+		if (inputEvent.data === '‘') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '『';
 			return;
 		}
 
-		if (e.data === '~') {
-			e.target.value = e.target.value.slice(0, -1) + '〜';
+		if (inputEvent.data === '’') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '』';
 			return;
 		}
 
-		if (e.data === ' ') {
-			e.target.value = e.target.value.slice(0, -1) + '　';
+		if (inputEvent.data === '~') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '〜';
 			return;
 		}
 
-		if (e.data === '-') {
-			e.target.value = e.target.value.slice(0, -1) + 'ー';
+		if (inputEvent.data === ' ') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + '　';
 			return;
 		}
 
-		if (e.data === "'") {
-			const charCode = e.target.value.charCodeAt(e.target.value.length - 2);
+		if (inputEvent.data === '-') {
+			inputEvent.target.value = inputEvent.target.value.slice(0, -1) + 'ー';
+			return;
+		}
+
+		if (inputEvent.data === "'") {
+			const charCode = inputEvent.target.value.charCodeAt(inputEvent.target.value.length - 2);
 			if (MT.A.charCodeAt(0) <= charCode && charCode <= MT.MO.charCodeAt(0)) {
-				e.target.value = e.target.value.slice(0, -2) + String.fromCharCode(charCode + 74);
+				inputEvent.target.value =
+					inputEvent.target.value.slice(0, -2) + String.fromCharCode(charCode + 74);
 				return;
 			} else if (MT.A.charCodeAt(0) + 74 <= charCode && charCode <= MT.MO.charCodeAt(0) + 74) {
-				e.target.value = e.target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
+				inputEvent.target.value =
+					inputEvent.target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
 				return;
 			} else if (MT.A.charCodeAt(0) + 144 <= charCode && charCode <= MT.MO.charCodeAt(0) + 144) {
-				e.target.value = e.target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
+				inputEvent.target.value =
+					inputEvent.target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
 				return;
 			}
 		}
 
 		for (const [key, value] of Object.entries(MT).sort((a, b) => b[0].length - a[0].length)) {
-			if (e.target.value.endsWith(key)) {
-				e.target.value = e.target.value.slice(0, -key.length) + value;
+			if (inputEvent.target.value.endsWith(key)) {
+				inputEvent.target.value = inputEvent.target.value.slice(0, -key.length) + value;
 				return;
 			}
 		}
 	}
 </script>
 
-<input {...restProps} bind:value on:input={oninput} />
+<input {...restProps} bind:value {oninput} />
