@@ -202,15 +202,17 @@
 						<div class="dialog">
 							<h2>수정 인증</h2>
 							<p>변경사항을 저장하려면 OTP를 입력하세요.</p>
-							<Input
-								bind:value={otp}
-								type="text"
-								inputmode="numeric"
-								pattern="\d{6}"
-								maxlength="6"
-								placeholder="000 000"
-								autocomplete="one-time-code"
-							/>
+							<form>
+								<Input
+									bind:value={otp}
+									type="text"
+									inputmode="numeric"
+									pattern={`\\d{6}`}
+									maxlength="6"
+									placeholder="000000"
+									autocomplete="one-time-code"
+								/>
+							</form>
 							<div class="dialog-actions">
 								<button onclick={() => (showOtp = false)}>취소</button>
 								<button onclick={saveWord}>확인</button>
