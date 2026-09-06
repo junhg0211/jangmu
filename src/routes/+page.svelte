@@ -225,11 +225,11 @@
 									placeholder="000000"
 									autocomplete="one-time-code"
 								/>
+								<div class="dialog-actions">
+									<button onclick={saveWord} type="submit">확인</button>
+								</div>
 							</form>
-							<div class="dialog-actions">
-								<button onclick={() => (showOtp = false)}>취소</button>
-								<button onclick={saveWord}>확인</button>
-							</div>
+							<button onclick={() => (showOtp = false)}>취소</button>
 						</div>
 					</div>
 				{/if}
