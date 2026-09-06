@@ -54,10 +54,6 @@
 		words = await response.json();
 		loading = false;
 
-		if (!selected && words.length > 0) {
-			selected = { ...words[0] };
-		}
-
 		localStorage.setItem('words', JSON.stringify(words));
 	}
 
