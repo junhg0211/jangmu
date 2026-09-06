@@ -163,6 +163,7 @@ export function getSuggestions(query: string): Suggestion[] {
 			// PAGE까지 전부 입력한 경우
 			if (query.endsWith(entry.pronunciation)) {
 				suggestions.push({
+					type: 'word',
 					entry,
 					display: entry.word,
 					matched: entry.pronunciation
@@ -175,6 +176,7 @@ export function getSuggestions(query: string): Suggestion[] {
 			if (query.endsWith(entry.word)) {
 				suggestions.push({
 					entry,
+					type: 'word',
 					display: entry.word,
 					matched: entry.word
 				});
@@ -186,6 +188,7 @@ export function getSuggestions(query: string): Suggestion[] {
 			// PA → 旨
 			if (pronunciationPart && query.endsWith(pronunciationPart)) {
 				suggestions.push({
+					type: 'word',
 					entry,
 					display: wordPart,
 					matched: pronunciationPart
@@ -232,10 +235,24 @@ function getConversionParts(entry: DictionaryWord) {
 }
 
 export type Suggestion = {
+	type: 'word';
 	entry: DictionaryWord;
 	display: string;
 	matched: string;
 };
+
+export type AutocompleteSuggestion =
+	| {
+			type: 'word';
+			entry: DictionaryWord;
+			display: string;
+			matched: string;
+	  }
+	| {
+			type: 'reference';
+			entry: DictionaryWord;
+			display: string;
+	  };
 
 export function applySuggestion(target: TextControl, suggestion: Suggestion) {
 	const cursor = target.selectionStart ?? 0;
@@ -326,4 +343,58 @@ export function transformInput(e: Event & { currentTarget: TextControl }) {
 
 		return;
 	}
+}
+
+export function getReferenceQuery(target: TextControl) {
+	const cursor = target.selectionStart ?? 0;
+	const before = target.value.slice(0, cursor);
+
+	const match = before.match(/#([^#\s]*)$/);
+
+	return match?.[1] ?? null;
+}
+
+export function getReferenceSuggestions(query: string): AutocompleteSuggestion[] {
+	if (typeof localStorage === 'undefined') {
+		return [];
+	}
+
+	const words = JSON.parse(localStorage.getItem('words') ?? '[]') as DictionaryWord[];
+
+	const q = query.toLowerCase();
+
+	return words
+		.filter(
+			(word) =>
+				word.word.toLowerCase().includes(q) ||
+				word.pronunciation.toLowerCase().includes(q) ||
+				word.meaning.toLowerCase().includes(q)
+		)
+		.slice(0, 10)
+		.map((entry) => ({
+			type: 'reference' as const,
+			entry,
+			display: entry.word
+		}));
+}
+
+export function applyReference(target: TextControl, word: DictionaryWord) {
+	const cursor = target.selectionStart ?? 0;
+	const before = target.value.slice(0, cursor);
+	const after = target.value.slice(cursor);
+
+	const match = before.match(/#[^#\s]*$/);
+
+	if (!match) return;
+
+	const start = cursor - match[0].length;
+
+	const replacement = `#${word.id}`;
+
+	target.value = before.slice(0, start) + replacement + after;
+
+	const newCursor = start + replacement.length;
+
+	target.selectionStart = newCursor;
+	target.selectionEnd = newCursor;
 }

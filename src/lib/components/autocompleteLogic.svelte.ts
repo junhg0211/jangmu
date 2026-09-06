@@ -1,9 +1,13 @@
 // autocomplete.ts
 import {
+	applyReference,
 	applySuggestion,
 	getCurrentWord,
+	getReferenceQuery,
+	getReferenceSuggestions,
 	getSuggestions,
 	transformInput,
+	type AutocompleteSuggestion,
 	type Suggestion,
 	type TextControl
 } from './input';
@@ -15,11 +19,20 @@ export function createAutocomplete<T extends TextControl>(
 		allowEnter?: boolean;
 	}
 ) {
-	let suggestions = $state<Suggestion[]>([]);
+	let suggestions = $state<AutocompleteSuggestion[]>([]);
 	let selectedIndex = $state(0);
 
 	function updateSuggestions() {
 		const element = getElement();
+
+		const referenceQuery = getReferenceQuery(element);
+
+		if (referenceQuery !== null) {
+			suggestions = getReferenceSuggestions(referenceQuery);
+			selectedIndex = 0;
+			return;
+		}
+
 		const query = getCurrentWord(element);
 
 		suggestions = getSuggestions(query);
@@ -33,10 +46,14 @@ export function createAutocomplete<T extends TextControl>(
 		updateSuggestions();
 	}
 
-	function select(suggestion: Suggestion) {
+	function select(suggestion: AutocompleteSuggestion) {
 		const element = getElement();
 
-		applySuggestion(element, suggestion);
+		if (suggestion.type === 'reference') {
+			applyReference(element, suggestion.entry);
+		} else {
+			applySuggestion(element, suggestion);
+		}
 
 		setValue(element.value);
 		suggestions = [];

@@ -21,6 +21,7 @@
 	let error = $state('');
 	let isNew = $state(false);
 	let search = $state('');
+	let deleteMode = $state(false);
 
 	let filteredWords = $derived(
 		words.filter((word) => {
@@ -64,12 +65,61 @@
 		error = '';
 	}
 
+	function requestDelete() {
+		if (!selected) return;
+
+		otp = '';
+		error = '';
+		showOtp = true;
+		deleteMode = true;
+	}
+
+	async function deleteWord() {
+		if (!selected) return;
+
+		const response = await fetch(`/api/words/${selected.id}`, {
+			method: 'DELETE',
+			headers: {
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify({
+				otp
+			})
+		});
+
+		if (!response.ok) {
+			const result = await response.json().catch(() => null);
+
+			error = result?.error ?? '삭제하지 못했습니다.';
+			otp = '';
+
+			return;
+		}
+
+		showOtp = false;
+		deleteMode = false;
+		otp = '';
+		selected = null;
+
+		await loadWords();
+
+		if (words.length > 0) {
+			selected = { ...words[0] };
+		}
+	}
+
 	function requestSave() {
 		if (!selected) return;
 
 		otp = '';
 		error = '';
 		showOtp = true;
+	}
+
+	function closeOtp() {
+		showOtp = false;
+		deleteMode = false;
+		otp = '';
 	}
 
 	async function saveWord() {
@@ -207,6 +257,7 @@
 					<span>어원</span>
 					<textarea bind:value={selected.etymology}></textarea>
 				</label>
+				<button onclick={requestDelete} disabled={!selected || isNew}> 삭제 </button>
 				{#if error}
 					<p class="error">{error}</p>
 				{/if}
@@ -226,10 +277,10 @@
 									autocomplete="one-time-code"
 								/>
 								<div class="dialog-actions">
-									<button onclick={saveWord} type="submit">확인</button>
+									<button onclick={deleteMode ? deleteWord : saveWord} type="submit"> 확인 </button>
 								</div>
 							</form>
-							<button onclick={() => (showOtp = false)}>취소</button>
+							<button onclick={closeOtp}>취소</button>
 						</div>
 					</div>
 				{/if}
