@@ -123,7 +123,8 @@ const MT = {
 	'’': '』',
 	'~': '〜',
 	' ': '　',
-	'-': 'ー'
+	'-': 'ー',
+	'/': '・'
 };
 
 export type TextControl = HTMLInputElement | HTMLTextAreaElement;
