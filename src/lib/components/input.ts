@@ -72,12 +72,30 @@ const MT = {
 	NGG: String.fromCharCode(70 + 0xe300),
 	NN: String.fromCharCode(71 + 0xe300),
 	LL: String.fromCharCode(72 + 0xe300),
-	MM: String.fromCharCode(73 + 0xe300)
+	MM: String.fromCharCode(73 + 0xe300),
+	'?': '？',
+	'!': '！',
+	'.': '。',
+	',': '，',
+	'\\': '、',
+	';': '；',
+	':': '：',
+	'(': '（',
+	')': '）',
+	'“': '「',
+	'‘': '『',
+	'”': '」',
+	'’': '』',
+	'~': '〜',
+	' ': '　',
+	'-': 'ー'
 };
 
 export function oninput(e: Event & { currentTarget: HTMLInputElement }) {
 	const inputEvent = e as unknown as InputEvent;
 	const target = e.target as HTMLInputElement;
+	const previous = target.value.slice(0, target.selectionStart || 0);
+	const next = target.value.slice(target.selectionStart || 0);
 
 	if (!inputEvent.data) {
 		return;
@@ -87,103 +105,27 @@ export function oninput(e: Event & { currentTarget: HTMLInputElement }) {
 		return;
 	}
 
-	if (inputEvent.data === '?') {
-		target.value = target.value.slice(0, -1) + '？';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '!') {
-		target.value = target.value.slice(0, -1) + '！';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '.') {
-		target.value = target.value.slice(0, -1) + '。';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === ',') {
-		target.value = target.value.slice(0, -1) + '，';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '\\') {
-		target.value = target.value.slice(0, -1) + '、';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === ';') {
-		target.value = target.value.slice(0, -1) + '；';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === ':') {
-		target.value = target.value.slice(0, -1) + '：';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '(') {
-		target.value = target.value.slice(0, -1) + '（';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === ')') {
-		target.value = target.value.slice(0, -1) + '）';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '“') {
-		target.value = target.value.slice(0, -1) + '「';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '”') {
-		target.value = target.value.slice(0, -1) + '」';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '‘') {
-		target.value = target.value.slice(0, -1) + '『';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '’') {
-		target.value = target.value.slice(0, -1) + '』';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '~') {
-		target.value = target.value.slice(0, -1) + '〜';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === ' ') {
-		target.value = target.value.slice(0, -1) + '　';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
-	if (inputEvent.data === '-') {
-		target.value = target.value.slice(0, -1) + 'ー';
-		return target.dispatchEvent(new Event('input', { bubbles: true }));
-	}
-
 	if (inputEvent.data === "'") {
-		const charCode = target.value.charCodeAt(target.value.length - 2);
+		const charCode = previous.charCodeAt(target.value.length - 2);
 		if (MT.A.charCodeAt(0) <= charCode && charCode <= MT.MO.charCodeAt(0)) {
-			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 74);
+			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 74) + next;
+			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
 			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		} else if (MT.A.charCodeAt(0) + 74 <= charCode && charCode <= MT.MO.charCodeAt(0) + 74) {
-			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
+			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 70) + next;
+			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
 			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		} else if (MT.A.charCodeAt(0) + 144 <= charCode && charCode <= MT.MO.charCodeAt(0) + 144) {
-			target.value = target.value.slice(0, -2) + String.fromCharCode(charCode + 70);
+			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 70) + next;
+			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
 			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 	}
 
 	for (const [key, value] of Object.entries(MT).sort((a, b) => b[0].length - a[0].length)) {
-		if (target.value.endsWith(key)) {
-			target.value = target.value.slice(0, -key.length) + value;
+		if (previous.endsWith(key)) {
+			target.value = previous.slice(0, -key.length) + value + next;
+			target.selectionStart = target.selectionEnd = previous.length - key.length + value.length;
 			return target.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 	}
