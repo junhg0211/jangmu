@@ -196,6 +196,7 @@
 			<p>
 				<button onclick={downloadFont}>폰트 다운로드</button>
 				<button onclick={createNewWord}>새 단어</button>
+				<button onclick={selectWord(null)}>선택 해제</button>
 				<Input bind:value={search} placeholder="검색" />
 			</p>
 		</div>
