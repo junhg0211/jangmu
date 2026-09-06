@@ -25,3 +25,7 @@
 </svelte:head>
 
 {@render children()}
+<div>
+	<a href="/">홈</a>
+	<a href="/fanqie">반절</a>
+</div>

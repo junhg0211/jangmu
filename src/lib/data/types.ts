@@ -8,3 +8,12 @@ export type Word = {
 	created_at: string;
 	updated_at: string;
 };
+
+export type Fanqie = {
+	id: number;
+	fanqie: string;
+	shengmu: boolean;
+	reading: string;
+	created_at: string;
+	updated_at: string;
+};

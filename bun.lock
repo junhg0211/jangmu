@@ -9,6 +9,7 @@
         "@sveltejs/adapter-node": "^5.5.7",
         "mysql2": "^3.24.3",
         "otplib": "^13.5.0",
+        "tshet-uinh": "^0.15.4",
       },
       "devDependencies": {
         "@sveltejs/adapter-auto": "^7.0.1",
@@ -313,6 +314,8 @@
     "tinyglobby": ["tinyglobby@0.2.17", "", { "dependencies": { "fdir": "^6.5.0", "picomatch": "^4.0.4" } }, "sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g=="],
 
     "totalist": ["totalist@3.0.1", "", {}, "sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ=="],
+
+    "tshet-uinh": ["tshet-uinh@0.15.4", "", {}, "sha512-Bz93oMaSAkMp7pA6kKeBG3s860r9wbUPG1K/brkSkL01GQUK8okKVZcm0ZOVXCdBCWJXz00CXq+jm2IcYlfdkA=="],
 
     "typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 
