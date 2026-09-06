@@ -203,39 +203,42 @@
 				<Input bind:value={search} placeholder="검색" />
 			</p>
 		</div>
-		<div>
-			{#if loading}
-				<p>단어 불러오는 중...</p>
-			{:else}
-				<table style="width: 100%; border-collapse: collapse;">
-					<thead>
-						<tr style="border-top: 1px solid black; border-bottom: 1px solid black;">
-							<th>ID</th>
-							<th>단어</th>
-							<th>발음</th>
-							<th>품사</th>
-							<th>뜻</th>
-							<th>어원</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each filteredWords as word}
-							<tr
-								onclick={() => selectWord(word)}
-								style="border-bottom: 1px solid black; cursor: pointer;"
-							>
-								<td>{word.id}</td>
-								<td>{word.word}</td>
-								<td>{word.pronunciation}</td>
-								<td>{word.pos}</td>
-								<td>{word.meaning}</td>
-								<td>{word.etymology}</td>
+		{#if search.length > 0}
+			<p>검색 결과: {filteredWords.length}개</p>
+			<div>
+				{#if loading}
+					<p>단어 불러오는 중...</p>
+				{:else}
+					<table style="width: 100%; border-collapse: collapse;">
+						<thead>
+							<tr style="border-top: 1px solid black; border-bottom: 1px solid black;">
+								<th>ID</th>
+								<th>단어</th>
+								<th>발음</th>
+								<th>품사</th>
+								<th>뜻</th>
+								<th>어원</th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
-			{/if}
-		</div>
+						</thead>
+						<tbody>
+							{#each filteredWords as word}
+								<tr
+									onclick={() => selectWord(word)}
+									style="border-bottom: 1px solid black; cursor: pointer;"
+								>
+									<td>{word.id}</td>
+									<td>{word.word}</td>
+									<td>{word.pronunciation}</td>
+									<td>{word.pos}</td>
+									<td>{word.meaning}</td>
+									<td>{word.etymology}</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				{/if}
+			</div>
+		{/if}
 	</div>
 	<div>
 		{#if selected}
