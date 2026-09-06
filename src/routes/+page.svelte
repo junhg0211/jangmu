@@ -55,6 +55,8 @@
 		if (!selected && words.length > 0) {
 			selected = { ...words[0] };
 		}
+
+		localStorage.setItem('words', JSON.stringify(words));
 	}
 
 	function selectWord(word: Word) {

@@ -91,42 +91,203 @@ const MT = {
 	'-': 'ー'
 };
 
-export function oninput(e: Event & { currentTarget: HTMLInputElement }) {
+export type TextControl = HTMLInputElement | HTMLTextAreaElement;
+
+export type DictionaryWord = {
+	id: number;
+	word: string;
+	pronunciation: string;
+	pos: string;
+	meaning: string;
+	etymology: string;
+};
+
+export function getCurrentWord(target: TextControl) {
+	const cursor = target.selectionStart ?? 0;
+	const before = target.value.slice(0, cursor);
+
+	const match = before.match(/[^\s　。、，！？；：（）「」『』]+$/);
+
+	return match?.[0] ?? '';
+}
+
+export function getSuggestions(query: string): Suggestion[] {
+	if (!query || typeof localStorage === 'undefined') {
+		return [];
+	}
+
+	try {
+		const words = JSON.parse(localStorage.getItem('words') ?? '[]') as DictionaryWord[];
+
+		const suggestions: Suggestion[] = [];
+
+		for (const entry of words) {
+			const { wordPart, pronunciationPart, suffix } = getConversionParts(entry);
+
+			// PAGE까지 전부 입력한 경우
+			if (query.endsWith(entry.pronunciation)) {
+				suggestions.push({
+					entry,
+					display: entry.word,
+					matched: entry.pronunciation
+				});
+
+				continue;
+			}
+
+			// 이미 표기 자체를 입력한 경우
+			if (query.endsWith(entry.word)) {
+				suggestions.push({
+					entry,
+					display: entry.word,
+					matched: entry.word
+				});
+
+				continue;
+			}
+
+			// 한자 부분의 발음만 입력
+			// PA → 旨
+			if (pronunciationPart && query.endsWith(pronunciationPart)) {
+				suggestions.push({
+					entry,
+					display: wordPart,
+					matched: pronunciationPart
+				});
+			}
+		}
+
+		return suggestions.slice(0, 10);
+	} catch {
+		return [];
+	}
+}
+
+function getCommonSuffixLength(a: string, b: string) {
+	let length = 0;
+
+	while (
+		length < a.length &&
+		length < b.length &&
+		a[a.length - 1 - length] === b[b.length - 1 - length]
+	) {
+		length++;
+	}
+
+	return length;
+}
+
+function getConversionParts(entry: DictionaryWord) {
+	const suffixLength = getCommonSuffixLength(entry.word, entry.pronunciation);
+
+	if (suffixLength === 0) {
+		return {
+			wordPart: entry.word,
+			pronunciationPart: entry.pronunciation,
+			suffix: ''
+		};
+	}
+
+	return {
+		wordPart: entry.word.slice(0, -suffixLength),
+		pronunciationPart: entry.pronunciation.slice(0, -suffixLength),
+		suffix: entry.word.slice(-suffixLength)
+	};
+}
+
+export type Suggestion = {
+	entry: DictionaryWord;
+	display: string;
+	matched: string;
+};
+
+export function applySuggestion(target: TextControl, suggestion: Suggestion) {
+	const cursor = target.selectionStart ?? 0;
+
+	const before = target.value.slice(0, cursor);
+	const after = target.value.slice(cursor);
+
+	const { entry, matched } = suggestion;
+
+	const { wordPart, pronunciationPart } = getConversionParts(entry);
+
+	let replacement: string;
+
+	if (matched === entry.pronunciation) {
+		// PAGE → 旨GE
+		replacement = entry.word;
+	} else if (matched === pronunciationPart) {
+		// PA → 旨
+		replacement = wordPart;
+	} else {
+		replacement = entry.word;
+	}
+
+	const start = cursor - matched.length;
+
+	target.value = before.slice(0, start) + replacement + after;
+
+	const newCursor = start + replacement.length;
+
+	target.selectionStart = newCursor;
+	target.selectionEnd = newCursor;
+}
+
+export function transformInput(e: Event & { currentTarget: TextControl }) {
 	const inputEvent = e as unknown as InputEvent;
-	const target = e.target as HTMLInputElement;
-	const previous = target.value.slice(0, target.selectionStart || 0);
-	const next = target.value.slice(target.selectionStart || 0);
+	const target = e.currentTarget;
+
+	// 한국어/일본어/중국어 IME 조합 중에는 건드리지 않기
+	if (inputEvent.isComposing) {
+		return;
+	}
 
 	if (!inputEvent.data) {
 		return;
 	}
 
-	if (!target) {
-		return;
-	}
+	const cursor = target.selectionStart ?? 0;
+	const previous = target.value.slice(0, cursor);
+	const next = target.value.slice(cursor);
 
 	if (inputEvent.data === "'") {
-		const charCode = previous.charCodeAt(target.value.length - 2);
+		const charCode = previous.charCodeAt(previous.length - 2);
+
 		if (MT.A.charCodeAt(0) <= charCode && charCode <= MT.MO.charCodeAt(0)) {
 			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 74) + next;
-			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
-			return target.dispatchEvent(new Event('input', { bubbles: true }));
-		} else if (MT.A.charCodeAt(0) + 74 <= charCode && charCode <= MT.MO.charCodeAt(0) + 74) {
+
+			target.selectionStart = target.selectionEnd = cursor - 1;
+
+			return;
+		}
+
+		if (MT.A.charCodeAt(0) + 74 <= charCode && charCode <= MT.MO.charCodeAt(0) + 74) {
 			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 70) + next;
-			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
-			return target.dispatchEvent(new Event('input', { bubbles: true }));
-		} else if (MT.A.charCodeAt(0) + 144 <= charCode && charCode <= MT.MO.charCodeAt(0) + 144) {
+
+			target.selectionStart = target.selectionEnd = cursor - 1;
+
+			return;
+		}
+
+		if (MT.A.charCodeAt(0) + 144 <= charCode && charCode <= MT.MO.charCodeAt(0) + 144) {
 			target.value = previous.slice(0, -2) + String.fromCharCode(charCode + 70) + next;
-			target.selectionStart = target.selectionEnd = (target.selectionStart || 0) - 1;
-			return target.dispatchEvent(new Event('input', { bubbles: true }));
+
+			target.selectionStart = target.selectionEnd = cursor - 1;
+
+			return;
 		}
 	}
 
 	for (const [key, value] of Object.entries(MT).sort((a, b) => b[0].length - a[0].length)) {
-		if (previous.endsWith(key)) {
-			target.value = previous.slice(0, -key.length) + value + next;
-			target.selectionStart = target.selectionEnd = previous.length - key.length + value.length;
-			return target.dispatchEvent(new Event('input', { bubbles: true }));
-		}
+		if (!previous.endsWith(key)) continue;
+
+		target.value = previous.slice(0, -key.length) + value + next;
+
+		const newCursor = previous.length - key.length + value.length;
+
+		target.selectionStart = newCursor;
+		target.selectionEnd = newCursor;
+
+		return;
 	}
 }
