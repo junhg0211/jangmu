@@ -124,6 +124,15 @@
 		error = '';
 	}
 
+	function downloadFont() {
+		const link = document.createElement('a');
+		link.href = '/fonts/JangmuKana-Regular.ttf';
+		link.download = 'JangmuKana-Regular.ttf';
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
+
 	onMount(() => {
 		loadWords();
 	});
@@ -138,6 +147,7 @@
 		<div>
 			<h1>장무</h1>
 			<p>
+				<button onclick={downloadFont}>폰트 다운로드</button>
 				<button onclick={createNewWord}>새 단어</button>
 				<Input bind:value={search} placeholder="검색" />
 			</p>
