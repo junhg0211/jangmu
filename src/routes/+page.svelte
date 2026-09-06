@@ -30,6 +30,7 @@
 			if (!q) return true;
 
 			return (
+				word.id == q ||
 				word.word.toLowerCase().includes(q) ||
 				word.pronunciation.toLowerCase().includes(q) ||
 				word.pos.toLowerCase().includes(q) ||
@@ -209,6 +210,7 @@
 				<table style="width: 100%; border-collapse: collapse;">
 					<thead>
 						<tr style="border-top: 1px solid black; border-bottom: 1px solid black;">
+							<th>ID</th>
 							<th>단어</th>
 							<th>발음</th>
 							<th>품사</th>
@@ -222,6 +224,7 @@
 								onclick={() => selectWord(word)}
 								style="border-bottom: 1px solid black; cursor: pointer;"
 							>
+								<td>{word.id}</td>
 								<td>{word.word}</td>
 								<td>{word.pronunciation}</td>
 								<td>{word.pos}</td>
