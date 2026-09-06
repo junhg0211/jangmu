@@ -57,9 +57,14 @@
 		localStorage.setItem('words', JSON.stringify(words));
 	}
 
-	function selectWord(word: Word) {
-		selected = { ...word };
+	function selectWord(word: Word | null) {
 		error = '';
+
+		if (!word) {
+			selected = null;
+		} else {
+			selected = { ...word };
+		}
 	}
 
 	function requestDelete() {
